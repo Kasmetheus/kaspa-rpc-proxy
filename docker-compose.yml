@@ -1,0 +1,52 @@
+services:
+  kaspad:
+    image: supertypo/kaspad:latest
+    container_name: kaspad-testnet
+    command:
+      - kaspad
+      - --testnet
+      - --rpclisten=0.0.0.0:16110
+      - --utxoindex
+      - --addpeer=104.26.12.245:16211
+      - --addpeer=104.26.13.245:16211
+      - --addpeer=172.67.69.102:16211
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    volumes:
+      - kaspad-data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 16110 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+    ports:
+      - "16110:16110"
+      - "16211:16211/tcp"
+      - "16211:16211/udp"
+
+  kaspa-rpc-service:
+    build: .
+    container_name: kaspa-rpc-service
+    environment:
+      - KASPA_RPC_URL=http://kaspad:16110
+      - BIND_ADDRESS=0.0.0.0:8080
+      - JWT_SECRET=${JWT_SECRET}
+      - RUST_LOG=kaspa_rpc_service=info,tower_http=info
+    depends_on:
+      kaspad:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  kaspad-data:
+    driver: local
