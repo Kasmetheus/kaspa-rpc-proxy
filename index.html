@@ -1,0 +1,204 @@
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;Kaspa RPC Proxy - Fast, Reliable RPC for Kaspa Developers&lt;/title&gt;
+  &lt;script src=&quot;https://cdn.tailwindcss.com&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;https://js.stripe.com/v3/&quot;&gt;&lt;/script&gt;
+  &lt;style&gt;
+    .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .json-result { background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 1rem; font-family: monospace; white-space: pre-wrap; max-height: 400px; overflow-y: auto; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body class=&quot;bg-gray-100&quot;&gt;
+
+&lt;!-- Hero --&gt;
+&lt;section class=&quot;gradient-bg text-white py-20 px-4&quot;&gt;
+  &lt;div class=&quot;max-w-6xl mx-auto text-center&quot;&gt;
+    &lt;h1 class=&quot;text-5xl md:text-7xl font-bold mb-6&quot;&gt;🚀 Kaspa RPC Proxy&lt;/h1&gt;
+    &lt;p class=&quot;text-xl md:text-2xl mb-12 max-w-2xl mx-auto&quot;&gt;Reliable, high-performance RPC endpoints for Kaspa. 10x RPS, JWT auth, tiered plans.&lt;/p&gt;
+    &lt;div class=&quot;space-x-4&quot;&gt;
+      &lt;a href=&quot;#tester&quot; class=&quot;bg-white text-purple-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition&quot;&gt;Try RPC Demo&lt;/a&gt;
+      &lt;a href=&quot;#pricing&quot; class=&quot;border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-purple-600 transition&quot;&gt;View Pricing&lt;/a&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- RPC Tester --&gt;
+&lt;section id=&quot;tester&quot; class=&quot;py-20 px-4&quot;&gt;
+  &lt;div class=&quot;max-w-4xl mx-auto&quot;&gt;
+    &lt;h2 class=&quot;text-4xl font-bold text-center mb-16&quot;&gt;Test RPC Endpoint&lt;/h2&gt;
+    &lt;div class=&quot;bg-white rounded-2xl shadow-2xl p-8 md:p-12&quot;&gt;
+      &lt;div class=&quot;grid md:grid-cols-2 gap-6 mb-8&quot;&gt;
+        &lt;div&gt;
+          &lt;label class=&quot;block text-sm font-medium mb-2&quot;&gt;RPC URL&lt;/label&gt;
+          &lt;input id=&quot;rpcUrl&quot; type=&quot;url&quot; value=&quot;https://api.kaspa.org&quot; class=&quot;w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;label class=&quot;block text-sm font-medium mb-2&quot;&gt;Auth Bearer Token (optional)&lt;/label&gt;
+          &lt;input id=&quot;auth&quot; type=&quot;password&quot; placeholder=&quot;Bearer your-jwt&quot; class=&quot;w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500&quot; /&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;grid md:grid-cols-2 gap-4 mb-8&quot;&gt;
+        &lt;div&gt;
+          &lt;label class=&quot;block text-sm font-medium mb-2&quot;&gt;Kaspa Address (for balance)&lt;/label&gt;
+          &lt;input id=&quot;address&quot; value=&quot;kaspa:qpz6pw8u0uh7a9kfqgtuzmnvnj2y2ueej0g7vquh4a6xmj0shk9zq6g4j4j4j&quot; class=&quot;w-full p-3 border border-gray-300 rounded-lg&quot; /&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;flex items-end space-x-2&quot;&gt;
+          &lt;button onclick=&quot;testDagInfo()&quot; class=&quot;flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600&quot;&gt;Get Block DAG Info&lt;/button&gt;
+          &lt;button onclick=&quot;testBalance()&quot; class=&quot;flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-600&quot;&gt;Get Balance&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div id=&quot;result&quot; class=&quot;json-result hidden&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Features --&gt;
+&lt;section class=&quot;py-20 px-4 bg-gray-50&quot;&gt;
+  &lt;div class=&quot;max-w-6xl mx-auto&quot;&gt;
+    &lt;h2 class=&quot;text-4xl font-bold text-center mb-16&quot;&gt;Why Kaspa RPC Proxy?&lt;/h2&gt;
+    &lt;div class=&quot;grid md:grid-cols-4 gap-8&quot;&gt;
+      &lt;div class=&quot;text-center&quot;&gt;&lt;div class=&quot;text-5xl mb-4&quot;&gt;⚡&lt;/div&gt;&lt;h3 class=&quot;text-2xl font-bold mb-4&quot;&gt;10x Faster&lt;/h3&gt;&lt;p&gt;Optimized proxy for high RPS.&lt;/p&gt;&lt;/div&gt;
+      &lt;div class=&quot;text-center&quot;&gt;&lt;div class=&quot;text-5xl mb-4&quot;&gt;🔒&lt;/div&gt;&lt;h3 class=&quot;text-2xl font-bold mb-4&quot;&gt;JWT Auth&lt;/h3&gt;&lt;p&gt;Secure API keys per tier.&lt;/p&gt;&lt;/div&gt;
+      &lt;div class=&quot;text-center&quot;&gt;&lt;div class=&quot;text-5xl mb-4&quot;&gt;📊&lt;/div&gt;&lt;h3 class=&quot;text-2xl font-bold mb-4&quot;&gt;Metrics&lt;/h3&gt;&lt;p&gt;Prometheus + rate limits.&lt;/p&gt;&lt;/div&gt;
+      &lt;div class=&quot;text-center&quot;&gt;&lt;div class=&quot;text-5xl mb-4&quot;&gt;🚀&lt;/div&gt;&lt;h3 class=&quot;text-2xl font-bold mb-4&quot;&gt;wRPC/JSON&lt;/h3&gt;&lt;p&gt;HTTP/WS support.&lt;/p&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Pricing --&gt;
+&lt;section id=&quot;pricing&quot; class=&quot;py-20 px-4&quot;&gt;
+  &lt;div class=&quot;max-w-6xl mx-auto&quot;&gt;
+    &lt;h2 class=&quot;text-4xl font-bold text-center mb-16&quot;&gt;Simple Pricing&lt;/h2&gt;
+    &lt;div class=&quot;grid md:grid-cols-3 gap-8&quot;&gt;
+      &lt;div class=&quot;bg-white rounded-3xl shadow-2xl p-10 text-center relative&quot;&gt;
+        &lt;h3 class=&quot;text-3xl font-bold mb-6&quot;&gt;Free&lt;/h3&gt;
+        &lt;p class=&quot;text-5xl font-bold text-gray-900 mb-8&quot;&gt;$0&lt;span class=&quot;text-2xl font-normal text-gray-500&quot;&gt;/mo&lt;/span&gt;&lt;/p&gt;
+        &lt;ul class=&quot;mb-12 space-y-4 text-left mx-auto max-w-md&quot;&gt;
+          &lt;li class=&quot;flex items-center&quot;&gt;&lt;span class=&quot;w-5 h-5 bg-green-500 rounded-full mr-3&quot;&gt;&lt;/span&gt;10 RPS&lt;/li&gt;
+          &lt;li class=&quot;flex items-center&quot;&gt;&lt;span class=&quot;w-5 h-5 bg-green-500 rounded-full mr-3&quot;&gt;&lt;/span&gt;1k req/day&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;button onclick=&quot;checkout('price_free')&quot; class=&quot;w-full bg-gray-200 text-gray-800 py-4 px-8 rounded-2xl font-bold hover:bg-gray-300 transition&quot;&gt;Get Started&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-3xl shadow-2xl p-10 text-center relative md:-mt-4 md:-mb-4 md:shadow-3xl&quot;&gt;
+        &lt;div class=&quot;absolute -top-5 left-1/2 transform -translate-x-1/2 bg-white px-6 py-2 rounded-xl text-purple-600 font-bold&quot;&gt;Most Popular&lt;/div&gt;
+        &lt;h3 class=&quot;text-3xl font-bold mb-6&quot;&gt;Pro&lt;/h3&gt;
+        &lt;p class=&quot;text-5xl font-bold mb-8&quot;&gt;$19&lt;span class=&quot;text-2xl font-normal&quot;&gt;/mo&lt;/span&gt;&lt;/p&gt;
+        &lt;ul class=&quot;mb-12 space-y-4 text-left mx-auto max-w-md&quot;&gt;
+          &lt;li class=&quot;flex items-center&quot;&gt;&lt;span class=&quot;w-5 h-5 bg-white/30 rounded-full mr-3&quot;&gt;&lt;/span&gt;100 RPS&lt;/li&gt;
+          &lt;li class=&quot;flex items-center&quot;&gt;&lt;span class=&quot;w-5 h-5 bg-white/30 rounded-full mr-3&quot;&gt;&lt;/span&gt;1M req/day&lt;/li&gt;
+          &lt;li class=&quot;flex items-center&quot;&gt;&lt;span class=&quot;w-5 h-5 bg-white/30 rounded-full mr-3&quot;&gt;&lt;/span&gt;WS Notifications&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;button onclick=&quot;checkout('price_pro')&quot; class=&quot;w-full bg-white text-purple-500 py-4 px-8 rounded-2xl font-bold hover:bg-gray-100 transition&quot;&gt;Buy Pro&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;bg-white rounded-3xl shadow-2xl p-10 text-center&quot;&gt;
+        &lt;h3 class=&quot;text-3xl font-bold mb-6&quot;&gt;Ultra&lt;/h3&gt;
+        &lt;p class=&quot;text-5xl font-bold text-gray-900 mb-8&quot;&gt;$99&lt;span class=&quot;text-2xl font-normal text-gray-500&quot;&gt;/mo&lt;/span&gt;&lt;/p&gt;
+        &lt;ul class=&quot;mb-12 space-y-4 text-left mx-auto max-w-md&quot;&gt;
+          &lt;li class=&quot;flex items-center&quot;&gt;&lt;span class=&quot;w-5 h-5 bg-green-500 rounded-full mr-3&quot;&gt;&lt;/span&gt;Unlimited RPS&lt;/li&gt;
+          &lt;li class=&quot;flex items-center&quot;&gt;&lt;span class=&quot;w-5 h-5 bg-green-500 rounded-full mr-3&quot;&gt;&lt;/span&gt;Dedicated Node&lt;/li&gt;
+          &lt;li class=&quot;flex items-center&quot;&gt;&lt;span class=&quot;w-5 h-5 bg-green-500 rounded-full mr-3&quot;&gt;&lt;/span&gt;Priority Support&lt;/li&gt;
+        &lt;/ul&gt;
+        &lt;button onclick=&quot;checkout('price_ultra')&quot; class=&quot;w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white py-4 px-8 rounded-2xl font-bold hover:from-indigo-600 hover:to-blue-600&quot;&gt;Buy Ultra&lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Roadmap --&gt;
+&lt;section class=&quot;py-20 px-4 bg-gray-50&quot;&gt;
+  &lt;div class=&quot;max-w-4xl mx-auto&quot;&gt;
+    &lt;h2 class=&quot;text-4xl font-bold text-center mb-16&quot;&gt;Roadmap&lt;/h2&gt;
+    &lt;div class=&quot;space-y-8&quot;&gt;
+      &lt;div class=&quot;flex items-start space-x-6&quot;&gt;
+        &lt;div class=&quot;w-6 h-6 bg-purple-500 rounded-full mt-2 flex-shrink-0&quot;&gt;&lt;/div&gt;
+        &lt;div&gt;
+          &lt;h3 class=&quot;text-2xl font-bold mb-2&quot;&gt;Q1 2026: Beta Launch&lt;/h3&gt;
+          &lt;p&gt;Testnet proxy, basic tiers, Stripe integration.&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;flex items-start space-x-6&quot;&gt;
+        &lt;div class=&quot;w-6 h-6 bg-purple-500 rounded-full mt-2 flex-shrink-0&quot;&gt;&lt;/div&gt;
+        &lt;div&gt;
+          &lt;h3 class=&quot;text-2xl font-bold mb-2&quot;&gt;Q2 2026: Mainnet Prod&lt;/h3&gt;
+          &lt;p&gt;Full mainnet sync, high-load testing, dedicated infra.&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;flex items-start space-x-6&quot;&gt;
+        &lt;div class=&quot;w-6 h-6 bg-purple-500 rounded-full mt-2 flex-shrink-0&quot;&gt;&lt;/div&gt;
+        &lt;div&gt;
+          &lt;h3 class=&quot;text-2xl font-bold mb-2&quot;&gt;Q3+: Enterprise Features&lt;/h3&gt;
+          &lt;p&gt;SLAs, multi-region, custom nodes.&lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Login Stub &amp; Docs --&gt;
+&lt;section class=&quot;py-20 px-4&quot;&gt;
+  &lt;div class=&quot;max-w-6xl mx-auto text-center&quot;&gt;
+    &lt;h2 class=&quot;text-4xl font-bold mb-8&quot;&gt;Ready to Start?&lt;/h2&gt;
+    &lt;div class=&quot;space-x-4 mb-12&quot;&gt;
+      &lt;button onclick=&quot;loginStub()&quot; class=&quot;bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:from-green-600 hover:to-emerald-600&quot;&gt;Login / Dashboard&lt;/button&gt;
+      &lt;a href=&quot;https://github.com/user/kaspa-rpc-proxy&quot; class=&quot;border-2 border-gray-300 text-gray-700 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-100 transition&quot;&gt;Docs &amp; Repo&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;p class=&quot;text-lg text-gray-600&quot;&gt;Full docs in README. Quickstart examples included.&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/section&gt;
+
+&lt;!-- Footer --&gt;
+&lt;footer class=&quot;bg-gray-900 text-white py-12 px-4 text-center&quot;&gt;
+  &lt;p&gt;&amp;copy; 2026 Kaspa RPC Proxy. Made with ❤️ for Kaspa devs.&lt;/p&gt;
+&lt;/footer&gt;
+
+&lt;script&gt;
+const stripe = Stripe('pk_test_YOUR_PUBLISHABLE_KEY'); // Replace with real
+
+async function callRpc(method, params = []) {
+  const url = document.getElementById('rpcUrl').value;
+  const authVal = document.getElementById('auth').value;
+  const headers = { 'Content-Type': 'application/json' };
+  if (authVal) headers['Authorization'] = `Bearer ${authVal}`;
+  const body = { jsonrpc: '2.0', id: 1, method, params };
+  const resultEl = document.getElementById('result');
+  resultEl.classList.remove('hidden');
+  resultEl.textContent = 'Loading...';
+  try {
+    const res = await fetch(url, { method: 'POST', headers, body: JSON.stringify(body) });
+    const data = await res.json();
+    resultEl.textContent = JSON.stringify(data, null, 2);
+  } catch (e) {
+    resultEl.textContent = `Error: ${e.message}`;
+  }
+}
+
+function testDagInfo() {
+  callRpc('getBlockDagInfo');
+}
+
+function testBalance() {
+  const addr = document.getElementById('address').value;
+  if (!addr) return alert('Enter address');
+  callRpc('getBalance', [{ addresses: [addr] }]);
+}
+
+function checkout(priceId) {
+  stripe.redirectToCheckout({
+    lineItems: [{ price: priceId, quantity: 1 }],
+    mode: 'subscription',
+    successUrl: window.location.href,
+    cancelUrl: window.location.href,
+  }).then(console.log).catch(console.error);
+  // Note: Replace priceId with real Stripe price IDs
+}
+
+function loginStub() {
+  alert('Login/Dashboard coming soon! Sign up for beta access.');
+}
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
